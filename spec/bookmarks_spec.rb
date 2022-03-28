@@ -2,11 +2,15 @@ require 'bookmarks'
 
 describe Bookmarks do
   subject(:bookmarks) { described_class.new }
+
   describe '#all' do
-    it 'returns all bookmarks' do
-      expect(bookmarks.all).to eq [{ name: 'BBC News', url: 'http://www.bbc.co.uk' },
-                                   { name: 'Guardian Football', url: 'http://www.guardian.co.uk/football' },
-                                   { name: 'YouTube', url: 'http://www.youtube.com' }]
+    it 'pulls all entries from the bookmarks table in the bookmarks_manager database' do
+      expect(bookmarks.all).to eq [
+        { name: 'BBC News', url: 'https://www.bbc.co.uk/news' },
+        { name: 'YouTube', url: 'https://www.youtube.com' },
+        { name: 'Makers Academy', url: 'http://www.makersacademy.com' },
+        { name: 'Guardian Football', url: 'https://www.guardian.co.uk/football' }
+      ]
     end
   end
 end

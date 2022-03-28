@@ -1,10 +1,10 @@
 # retrives bookmarks from the 'database' and can return as an array
+require 'pg'
 
 class Bookmarks
   def initialize
-    @bookmarks = [{ name: 'BBC News', url: 'http://www.bbc.co.uk' },
-                  { name: 'Guardian Football', url: 'http://www.guardian.co.uk/football' },
-                  { name: 'YouTube', url: 'http://www.youtube.com' }]
+    db = PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
+    @results = db.exec 'SELECT * FROM bookmarks'
   end
 
   def self.all
@@ -12,6 +12,10 @@ class Bookmarks
   end
 
   def all
+    @bookmarks = []
+    @results.each do |bookmark|
+      @bookmarks << { name: bookmark['name'], url: bookmark['url'] }
+    end
     @bookmarks
   end
 end
