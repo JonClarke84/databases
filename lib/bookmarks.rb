@@ -3,7 +3,11 @@ require 'pg'
 
 class Bookmarks
   def initialize
-    db = PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
+    db = if ENV['ENVIRONMENT'] == 'test'
+           PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
+         else
+           PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
+         end
     @results = db.exec 'SELECT * FROM bookmarks'
   end
 
