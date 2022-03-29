@@ -30,7 +30,6 @@ class Bookmarks
   def create(url, name)
     raise if url.start_with?('http://', 'https://') == false
 
-    new_bookmark = { name: name, url: url }
     db = if ENV['ENVIRONMENT'] == 'test'
            PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
          else
