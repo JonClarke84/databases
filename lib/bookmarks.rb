@@ -22,6 +22,16 @@ class Bookmarks
     new.create(url, name)
   end
 
+  def self.delete(id:)
+    db = if ENV['ENVIRONMENT'] == 'test'
+           PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
+         else
+           PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
+         end
+    # binding.irb
+    db.exec_params('DELETE FROM bookmarks WHERE id = $1', [id])
+  end
+
   def all
     @bookmarks = []
     @results.each do |bookmark|
@@ -38,6 +48,6 @@ class Bookmarks
          else
            PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
          end
-    db.exec_params('INSERT INTO bookmarks (url, name) VALUES ($1, $2)', [url.to_s, name.to_s])
+    db.exec_params('INSERT INTO bookmarks (url, name) VALUES ($1, $2) RETURNING id, url, name', [url.to_s, name.to_s])
   end
 end

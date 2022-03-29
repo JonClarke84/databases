@@ -30,7 +30,8 @@ class BookmarkManager < Sinatra::Base
   end
 
   delete '/bookmarks/:id' do
-    p params
+    Bookmarks.delete(id: params[:id])
+    redirect '/bookmarks'
   end
 
   run! if app_file == $0
