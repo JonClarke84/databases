@@ -15,16 +15,16 @@ class Bookmarks
     new.all
   end
 
+  def self.create(url, name)
+    new.create(url, name)
+  end
+
   def all
     @bookmarks = []
     @results.each do |bookmark|
       @bookmarks << { name: bookmark['name'], url: bookmark['url'] }
     end
     @bookmarks
-  end
-
-  def self.create(url, name)
-    new.create(url, name)
   end
 
   def create(url, name)
@@ -35,6 +35,6 @@ class Bookmarks
          else
            PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
          end
-    db.exec "INSERT INTO bookmarks (name, url) VALUES ('#{name}', '#{url}')"
+    result = db.exec_params('INSERT INTO bookmarks (url, name) VALUES ($1, $2)', [url.to_s, name.to_s])
   end
 end
