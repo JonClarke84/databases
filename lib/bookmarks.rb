@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 # retrives bookmarks from the 'database' and can return as an array
+
 require 'pg'
 
 class Bookmarks
@@ -22,7 +25,7 @@ class Bookmarks
   def all
     @bookmarks = []
     @results.each do |bookmark|
-      @bookmarks << { name: bookmark['name'], url: bookmark['url'] }
+      @bookmarks << { id: bookmark['id'], name: bookmark['name'], url: bookmark['url'] }
     end
     @bookmarks
   end
@@ -35,6 +38,6 @@ class Bookmarks
          else
            PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
          end
-    result = db.exec_params('INSERT INTO bookmarks (url, name) VALUES ($1, $2)', [url.to_s, name.to_s])
+    db.exec_params('INSERT INTO bookmarks (url, name) VALUES ($1, $2)', [url.to_s, name.to_s])
   end
 end

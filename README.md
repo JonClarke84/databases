@@ -10,6 +10,10 @@ As a user
 So that I can remember a website for later
 I want to be able to add a website to my list of bookmarks
 
+As a user
+So I can remove a bookmark from Bookmark Manager
+I want to delete a bookmark
+
 1. CREATE THE DATABASE
    Connect to psql
    Create the database using the psql command CREATE DATABASE bookmark_manager;

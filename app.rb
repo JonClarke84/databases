@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'sinatra/reloader'
 require_relative 'lib/bookmarks'
@@ -6,6 +8,8 @@ class BookmarkManager < Sinatra::Base
   configure :development do
     register Sinatra::Reloader
   end
+
+  enable :sessions, :method_override
 
   get '/' do
     erb :index
@@ -23,6 +27,10 @@ class BookmarkManager < Sinatra::Base
   post '/create-bookmark' do
     Bookmarks.create(params[:url], params[:name])
     redirect '/'
+  end
+
+  delete '/bookmarks/:id' do
+    p params
   end
 
   run! if app_file == $0

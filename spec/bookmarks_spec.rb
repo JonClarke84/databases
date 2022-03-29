@@ -10,10 +10,10 @@ describe Bookmarks do
       db.exec("INSERT INTO bookmarks (url, name) VALUES ('https://www.youtube.com/', 'YouTube');")
 
       bookmarks = Bookmarks.all
-
-      expect(bookmarks).to include({ name: 'BBC News', url: 'https://www.bbc.co.uk/news' })
-      expect(bookmarks).to include({ name: 'Guardian Football', url: 'https://www.guardian.co.uk/football' })
-      expect(bookmarks).to include({ name: 'YouTube', url: 'https://www.youtube.com/' })
+      
+      expect(bookmarks).to include({ id: '1', name: 'BBC News', url: 'https://www.bbc.co.uk/news' })
+      expect(bookmarks).to include({ id: '2', name: 'Guardian Football', url: 'https://www.guardian.co.uk/football' })
+      expect(bookmarks).to include({ id: '3', name: 'YouTube', url: 'https://www.youtube.com/' })
     end
   end
 
@@ -25,8 +25,8 @@ describe Bookmarks do
 
       bookmarks = Bookmarks.all
 
-      expect(bookmarks).to include({ name: 'BBC News', url: 'https://www.bbc.co.uk/news' })
-      expect(bookmarks).to include({ name: 'My big test page', url: 'https://www.mytesturl.com' })
+      expect(bookmarks).to include({ id: '1', name: 'BBC News', url: 'https://www.bbc.co.uk/news' })
+      expect(bookmarks).to include({ id: '2', name: 'My big test page', url: 'https://www.mytesturl.com' })
     end
   end
 end
