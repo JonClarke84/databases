@@ -22,4 +22,20 @@ class Bookmarks
     end
     @bookmarks
   end
+
+  def self.create(url, name)
+    new.create(url, name)
+  end
+
+  def create(url, name)
+    raise if url.start_with?('http://', 'https://') == false
+
+    new_bookmark = { name: name, url: url }
+    db = if ENV['ENVIRONMENT'] == 'test'
+           PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
+         else
+           PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
+         end
+    db.exec "INSERT INTO bookmarks (name, url) VALUES ('#{name}', '#{url}')"
+  end
 end
