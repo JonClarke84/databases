@@ -45,4 +45,29 @@ class Bookmarks
          end
     db.exec_params('DELETE FROM bookmarks WHERE id = $1', [id])
   end
+
+  def self.find(id:)
+    db = if ENV['ENVIRONMENT'] == 'test'
+           PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
+         else
+           PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
+         end
+    result = db.exec_params('SELECT * FROM bookmarks WHERE id = $1', [id])
+    Bookmarks.new(id: result[0]['id'], name: result[0]['name'], url: result[0]['url'])
+  end
+
+  def self.update(id:, url:, name:)
+    db = if ENV['ENVIRONMENT'] == 'test'
+           PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
+         else
+           PG.connect dbname: 'bookmark_manager', user: 'jonathan.clarke'
+         end
+    result = db.exec_params(
+      "UPDATE bookmarks
+      SET url = '#{url}', name = '#{name}'
+      WHERE id = #{id}
+      RETURNING id, url, name"
+    )
+    Bookmarks.new(id: result[0]['id'], name: result[0]['name'], url: result[0]['url'])
+  end
 end

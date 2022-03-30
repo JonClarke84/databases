@@ -36,4 +36,30 @@ describe Bookmarks do
       expect(Bookmarks.all.length).to eq 0
     end
   end
+
+  describe '#find' do
+    it 'finds a specific bookmark' do
+      bookmark = Bookmarks.create(url: 'https://www.bbc.co.uk/news', name: 'BBC News')
+      Bookmarks.create(url: 'https://www.guardian.co.uk/football', name: 'Guardian Football')
+      Bookmarks.create(url: 'https://www.youtube.com/', name: 'YouTube')
+      result = Bookmarks.find(id: bookmark.id)
+      
+      expect(result).to be_a Bookmarks
+      expect(result.id).to eq bookmark.id
+      expect(result.name).to eq 'BBC News'
+      expect(result.url).to eq 'https://www.bbc.co.uk/news'
+    end
+  end
+
+  describe 'update' do
+    it 'updates a bookmark' do
+      bookmark = Bookmarks.create(url: 'https://www.bbc.co.uk/news', name: 'BBC News')
+      result = Bookmarks.update(id: bookmark.id, url: 'https://www.youtube.com', name: 'YouTube')
+
+      expect(result).to be_a Bookmarks
+      expect(result.id).to eq bookmark.id
+      expect(result.name).to eq 'YouTube'
+      expect(result.url).to eq 'https://www.youtube.com'
+    end
+  end
 end

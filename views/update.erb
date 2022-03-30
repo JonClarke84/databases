@@ -1,0 +1,8 @@
+<h1>Choose new values for <%= @bookmark.name %></h1>
+<form action='/bookmarks/<%= @bookmark.id%>/update' method='post'>
+  <input type='hidden' name='id' value='<%= @bookmark.id %>' />
+  <input type='hidden' name='_method' value='PATCH' />
+  <input type='text' name='name' placeholder='new name' />
+  <input type='text' name='url' placeholder='new url' />
+  <input type='submit' value='Update' />
+</form>
