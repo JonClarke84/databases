@@ -1,40 +1,38 @@
 require 'bookmarks'
+require 'database_helpers'
 
 describe Bookmarks do
   describe '#all' do
-    it 'pulls all entries from the bookmarks table in the bookmarks_manager database' do
-      db = PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
-
-      db.exec("INSERT INTO bookmarks (url, name) VALUES ('https://www.bbc.co.uk/news', 'BBC News');")
-      db.exec("INSERT INTO bookmarks (url, name) VALUES ('https://www.guardian.co.uk/football', 'Guardian Football');")
-      db.exec("INSERT INTO bookmarks (url, name) VALUES ('https://www.youtube.com/', 'YouTube');")
-
+    it 'returns all bookmarks' do
+      bookmark = Bookmarks.create(url: 'https://www.bbc.co.uk/news', name: 'BBC News')
+      Bookmarks.create(url: 'https://www.guardian.co.uk/football', name: 'Guardian Football')
+      Bookmarks.create(url: 'https://www.youtube.com/', name: 'YouTube')
       bookmarks = Bookmarks.all
 
-      expect(bookmarks).to include({ id: '1', name: 'BBC News', url: 'https://www.bbc.co.uk/news' })
-      expect(bookmarks).to include({ id: '2', name: 'Guardian Football', url: 'https://www.guardian.co.uk/football' })
-      expect(bookmarks).to include({ id: '3', name: 'YouTube', url: 'https://www.youtube.com/' })
+      expect(bookmarks.length).to eq 3
+      expect(bookmarks.first).to be_a Bookmarks
+      expect(bookmarks.first.id).to eq bookmark.id
+      expect(bookmarks.first.url).to eq 'https://www.bbc.co.uk/news'
+      expect(bookmarks.first.name).to eq 'BBC News'
     end
   end
 
   describe '#create' do
     it 'creates a new bookmark in the database' do
-      db = PG.connect(dbname: 'bookmark_manager_test', user: 'jonathan.clarke')
-      db.exec("INSERT INTO bookmarks (url, name) VALUES ('https://www.bbc.co.uk/news', 'BBC News');")
-      Bookmarks.create('https://www.mytesturl.com', 'My big test page')
+      bookmark = Bookmarks.create(url: 'https://www.mytesturl.com', name: 'My big test page')
+      persisted_data = persisted_data(id: bookmark.id)
 
-      bookmarks = Bookmarks.all
-
-      expect(bookmarks).to include({ id: '1', name: 'BBC News', url: 'https://www.bbc.co.uk/news' })
-      expect(bookmarks).to include({ id: '2', name: 'My big test page', url: 'https://www.mytesturl.com' })
+      expect(bookmark).to be_a Bookmarks
+      expect(bookmark.id).to eq persisted_data['id']
+      expect(bookmark.name).to eq 'My big test page'
+      expect(bookmark.url).to eq 'https://www.mytesturl.com'
     end
   end
 
   describe '#delete' do
     it 'deletes a bookmark from the database' do
-      bookmark = Bookmarks.create('https://www.bbc.co.uk/news', 'BBC News')
-      Bookmarks.delete(id: bookmark['id'.to_i]['id'])
-      # binding.irb
+      bookmark = Bookmarks.create(url: 'https://www.bbc.co.uk/news', name: 'BBC News')
+      Bookmarks.delete(id: bookmark.id)
       expect(Bookmarks.all.length).to eq 0
     end
   end
