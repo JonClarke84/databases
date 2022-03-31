@@ -3,6 +3,7 @@
 # retrives bookmarks from the 'database' and can return as an array
 
 require_relative 'database_connection'
+require 'uri'
 
 class Bookmarks
   attr_reader :id, :name, :url
@@ -25,6 +26,8 @@ class Bookmarks
   end
 
   def self.create(url:, name:)
+    return false unless is_url?(url)
+
     result = DatabaseConnection.query(
       'INSERT INTO bookmarks (url, name) VALUES ($1, $2) RETURNING id, url, name;', [url, name]
     )
@@ -48,5 +51,9 @@ class Bookmarks
       RETURNING id, url, name;", [url, name, id]
     )
     Bookmarks.new(id: result[0]['id'], name: result[0]['name'], url: result[0]['url'])
+  end
+
+  def self.is_url?(url)
+    url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
   end
 end
