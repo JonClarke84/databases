@@ -25,8 +25,6 @@ class Bookmarks
   end
 
   def self.create(url:, name:)
-    raise if url.start_with?('http://', 'https://') == false
-
     result = DatabaseConnection.query(
       'INSERT INTO bookmarks (url, name) VALUES ($1, $2) RETURNING id, url, name;', [url, name]
     )
