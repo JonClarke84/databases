@@ -17,19 +17,19 @@ describe Bookmarks do
     end
   end
 
-  xdescribe '#create' do
+  describe '#create' do
     it 'creates a new bookmark in the database' do
       bookmark = Bookmarks.create(url: 'https://www.mytesturl.com', name: 'My big test page')
       persisted_data = persisted_data(id: bookmark.id)
 
       expect(bookmark).to be_a Bookmarks
-      expect(bookmark.id).to eq persisted_data['id']
+      expect(bookmark.id).to eq persisted_data.first['id']
       expect(bookmark.name).to eq 'My big test page'
       expect(bookmark.url).to eq 'https://www.mytesturl.com'
     end
   end
 
-  xdescribe '#delete' do
+  describe '#delete' do
     it 'deletes a bookmark from the database' do
       bookmark = Bookmarks.create(url: 'https://www.bbc.co.uk/news', name: 'BBC News')
       Bookmarks.delete(id: bookmark.id)
@@ -37,7 +37,7 @@ describe Bookmarks do
     end
   end
 
-  xdescribe '#find' do
+  describe '#find' do
     it 'finds a specific bookmark' do
       bookmark = Bookmarks.create(url: 'https://www.bbc.co.uk/news', name: 'BBC News')
       Bookmarks.create(url: 'https://www.guardian.co.uk/football', name: 'Guardian Football')
@@ -51,7 +51,7 @@ describe Bookmarks do
     end
   end
 
-  xdescribe 'update' do
+  describe 'update' do
     it 'updates a bookmark' do
       bookmark = Bookmarks.create(url: 'https://www.bbc.co.uk/news', name: 'BBC News')
       result = Bookmarks.update(id: bookmark.id, url: 'https://www.youtube.com', name: 'YouTube')

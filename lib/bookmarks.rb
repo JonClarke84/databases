@@ -2,8 +2,7 @@
 
 # retrives bookmarks from the 'database' and can return as an array
 
-require 'pg'
-require 'database_connection'
+require_relative 'database_connection'
 
 class Bookmarks
   attr_reader :id, :name, :url
@@ -15,7 +14,7 @@ class Bookmarks
   end
 
   def self.all
-    result = DatabaseConnection.query('SELECT * FROM bookmarks;')
+    result = DatabaseConnection.query('SELECT * FROM bookmarks')
     result.map do |bookmark|
       Bookmarks.new(
         url: bookmark['url'],
@@ -28,7 +27,9 @@ class Bookmarks
   def self.create(url:, name:)
     raise if url.start_with?('http://', 'https://') == false
 
-    result = DatabaseConnection.query("INSERT INTO bookmarks (url, name) VALUES ('#{url}', '#{name}') RETURNING id, url, name;")
+    result = DatabaseConnection.query(
+      'INSERT INTO bookmarks (url, name) VALUES ($1, $2) RETURNING id, url, name;', [url, name]
+    )
     Bookmarks.new(id: result[0]['id'], name: result[0]['name'], url: result[0]['url'])
   end
 
@@ -44,9 +45,9 @@ class Bookmarks
   def self.update(id:, url:, name:)
     result = DatabaseConnection.query(
       "UPDATE bookmarks
-      SET url = '#{url}', name = '#{name}'
-      WHERE id = #{id}
-      RETURNING id, url, name"
+      SET url = $1, name = $2
+      WHERE id = $3
+      RETURNING id, url, name;", [url, name, id]
     )
     Bookmarks.new(id: result[0]['id'], name: result[0]['name'], url: result[0]['url'])
   end
